@@ -1,1 +1,8 @@
-// place files you want to import through the `$lib` alias in this folder.
+interface Item {
+    id: number;
+    name: string;
+    description: string;
+    image: string;
+}
+
+export type { Item };
