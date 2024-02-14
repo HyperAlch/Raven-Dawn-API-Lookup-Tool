@@ -20,4 +20,5 @@
 			</li>
 		</ul>
 	</nav>
+	<a href="/wiki-code-generator">Go To: Wiki Code Generator</a>
 </header>
