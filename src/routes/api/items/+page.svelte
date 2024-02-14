@@ -100,11 +100,11 @@
 	<h1>Item API</h1>
 	<fieldset>
 		<legend><strong>Change Search Method</strong></legend>
-		<label for="switch-1">
+		<label for="search-method-switch">
 			<input
 				type="checkbox"
-				id="switch-1"
-				name="switch-1"
+				id="search-method-switch"
+				name="search-method-switch"
 				role="switch"
 				bind:checked={searchByName}
 			/>
