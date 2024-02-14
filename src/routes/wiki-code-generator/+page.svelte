@@ -9,6 +9,8 @@
 	let apiType: string = '';
 	let askForCodeOptions: Boolean = false;
 
+	let apiIdValue: string = '';
+
 	$: if (pageContentDiv) outputHTML = prettify(pageContentDiv.outerHTML);
 
 	onMount(() => {
@@ -39,7 +41,7 @@
 				<option value="" selected>Select an API type</option>
 				<option value="items">Items</option>
 			</select>
-			<input type="number" id="id" name="id" placeholder="ID" required />
+			<input type="number" id="id" name="id" placeholder="ID" bind:value={apiIdValue} required />
 			<input
 				type="button"
 				value="Add"
