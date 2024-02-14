@@ -96,61 +96,70 @@
 	});
 </script>
 
-<header>
-	<h1>Item API</h1>
-	<fieldset>
-		<legend><strong>Change Search Method</strong></legend>
-		<label for="search-method-switch">
-			<input
-				type="checkbox"
-				id="search-method-switch"
-				name="search-method-switch"
-				role="switch"
-				bind:checked={searchByName}
-			/>
-			{#if searchByName}
-				<code>Item Name</code>
-			{:else}
-				<code>Item ID</code>
-			{/if}
-		</label>
-	</fieldset>
-	<input
-		type="search"
-		id="search"
-		name="search"
-		placeholder="Search"
-		bind:value={searchValue}
-		disabled={data.length === 0}
-	/>
-</header>
+{#if data.length !== 0}
+	<header>
+		<h1>Item API</h1>
+		<fieldset>
+			<legend><strong>Change Search Method</strong></legend>
+			<label for="search-method-switch">
+				<input
+					type="checkbox"
+					id="search-method-switch"
+					name="search-method-switch"
+					role="switch"
+					bind:checked={searchByName}
+				/>
+				{#if searchByName}
+					<code>Item Name</code>
+				{:else}
+					<code>Item ID</code>
+				{/if}
+			</label>
+		</fieldset>
+		<input
+			type="search"
+			id="search"
+			name="search"
+			placeholder="Search"
+			bind:value={searchValue}
+			disabled={data.length === 0}
+		/>
+	</header>
+{/if}
 
 <main>
-	<section id="tables">
-		<figure>
-			<table role="grid">
-				<thead>
-					<tr>
-						<th scope="col">ID</th>
-						<th scope="col">Name</th>
-						<th scope="col">Description</th>
-						<th scope="col">Image</th>
-					</tr>
-				</thead>
-				<tbody>
-					{#each tableData as row}
+	{#if data.length === 0}
+		<h1>Loading...</h1>
+		<article aria-busy="true"></article>
+	{:else}
+		<section id="tables">
+			<figure>
+				<table role="grid">
+					<thead>
 						<tr>
-							<th scope="row">{row.id}</th>
-							<td>{row.name}</td>
-							<td>{row.description}</td>
-							<td><span aria-busy="true" data-src={row.image} data-alt={row.name}>Loading</span></td
-							>
+							<th scope="col">ID</th>
+							<th scope="col">Name</th>
+							<th scope="col">Description</th>
+							<th scope="col">Image</th>
 						</tr>
-					{/each}
-				</tbody>
-			</table>
-		</figure>
-	</section>
+					</thead>
+					<tbody>
+						{#each tableData as row}
+							<tr>
+								<th scope="row">{row.id}</th>
+								<td>{row.name}</td>
+								<td>{row.description}</td>
+								<td
+									><span aria-busy="true" data-src={row.image} data-alt={row.name}>Loading</span
+									></td
+								>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+			</figure>
+		</section>
+	{/if}
 </main>
 
 <style>
