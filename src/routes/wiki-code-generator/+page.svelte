@@ -1,18 +1,21 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import ItemOptions from './item-options.svelte';
+	import { prettify } from 'htmlfy';
 
 	let pageContentDiv: HTMLDivElement;
-	let outputHTML: String = '';
+	let outputHTML: string = '';
 
-	let apiType: String = '';
+	let apiType: string = '';
 	let askForCodeOptions: Boolean = false;
 
-	$: if (pageContentDiv) outputHTML = pageContentDiv.outerHTML.replaceAll('>', '>\n');
+	$: if (pageContentDiv) outputHTML = prettify(pageContentDiv.outerHTML);
 
 	onMount(() => {
 		pageContentDiv = document.createElement('div');
 		pageContentDiv.classList.add('pageContent');
+
+		pageContentDiv.appendChild(document.createElement('span'));
 	});
 </script>
 
@@ -37,7 +40,14 @@
 				<option value="items">Items</option>
 			</select>
 			<input type="number" id="id" name="id" placeholder="ID" required />
-			<input type="button" value="Add" id="add-item" on:click={() => (askForCodeOptions = true)} />
+			<input
+				type="button"
+				value="Add"
+				id="add-item"
+				on:click={() => {
+					if (apiType !== '') askForCodeOptions = true;
+				}}
+			/>
 		</div>
 		<textarea bind:value={outputHTML} readonly></textarea>
 	{/if}
