@@ -10,31 +10,53 @@
 	let askForCodeOptions: Boolean = false;
 
 	let apiIdValue: string = '';
-
-	$: if (pageContentDiv) outputHTML = prettify(pageContentDiv.outerHTML);
+	let itemFetchIdsSet: Set<string> = new Set();
 
 	onMount(() => {
 		pageContentDiv = document.createElement('div');
 		pageContentDiv.classList.add('pageContent');
 
-		pageContentDiv.appendChild(document.createElement('span'));
+		outputHTML = prettify(pageContentDiv.outerHTML);
 	});
+
+	function handleGenerateItemCodes(event: any) {
+		askForCodeOptions = false;
+		const elements: Array<HTMLElement> = event.detail.elements;
+
+		for (const el of elements) {
+			pageContentDiv.appendChild(el);
+		}
+
+		if (elements.length > 0) {
+			pageContentDiv.appendChild(document.createElement('br'));
+			itemFetchIdsSet.add(apiIdValue);
+
+			pageContentDiv.removeAttribute('data-item-api-fetch');
+
+			let idStr = '';
+			for (const id of itemFetchIdsSet) {
+				idStr += ` ${id}`;
+			}
+
+			pageContentDiv.setAttribute('data-item-api-fetch', idStr.slice(1));
+		}
+
+		outputHTML = prettify(pageContentDiv.outerHTML).replaceAll('<br />', '\n');
+		apiIdValue = '';
+	}
 </script>
 
 <header>
+	<a href="/">Home</a>
+
 	<h1>Wiki Code Generator</h1>
 </header>
 
 <main>
 	{#if askForCodeOptions}
 		{#if apiType === 'items'}
-			<ItemOptions />
+			<ItemOptions on:generateItemCodes={handleGenerateItemCodes} {apiIdValue} />
 		{/if}
-		<br />
-		<div class="grid">
-			<button class="outline">Save Code</button>
-			<button class="secondary outline" on:click={() => (askForCodeOptions = false)}>Cancel</button>
-		</div>
 	{:else}
 		<div class="grid">
 			<select id="fruit" bind:value={apiType} required>
@@ -47,7 +69,7 @@
 				value="Add"
 				id="add-item"
 				on:click={() => {
-					if (apiType !== '') askForCodeOptions = true;
+					if (apiType !== '' && apiIdValue) askForCodeOptions = true;
 				}}
 			/>
 		</div>

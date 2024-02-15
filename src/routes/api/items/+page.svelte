@@ -98,6 +98,7 @@
 
 {#if data.length !== 0}
 	<header>
+		<a href="/">Home</a>
 		<h1>Item API</h1>
 		<fieldset>
 			<legend><strong>Change Search Method</strong></legend>
