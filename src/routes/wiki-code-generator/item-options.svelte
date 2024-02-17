@@ -5,47 +5,50 @@
 
 	export let apiIdValue: string;
 
-	// Item Name definitions
-	let enableItemName: boolean = false;
-	let enableItemNameStyle: boolean = false;
-	let enableItemNameClass: boolean = false;
-	let itemNameElementTypeRaw: string = '';
-	let itemNameElementType: string = '';
-	let itemNameSectionOpen: boolean = false;
-	$: itemNameElementType = itemNameElementTypeRaw.trim();
+	let itemNameUI = {
+		enabled: false,
+		style: false,
+		class: false,
+		typeRaw: '',
+		type: '',
+		open: false
+	};
+	$: itemNameElementType = itemNameUI.typeRaw.trim();
 
-	// Item Description definitions
-	let enableItemDescription: boolean = false;
-	let enableItemDescriptionStyle: boolean = false;
-	let enableItemDescriptionClass: boolean = false;
-	let itemDescriptionElementTypeRaw: string = '';
-	let itemDescriptionElementType: string = '';
-	let itemDescriptionSectionOpen: boolean = false;
-	$: itemDescriptionElementType = itemDescriptionElementTypeRaw.trim();
+	let itemDescriptionUI = {
+		enabled: false,
+		style: false,
+		class: false,
+		typeRaw: '',
+		type: '',
+		open: false
+	};
+	$: itemDescriptionElementType = itemDescriptionUI.typeRaw.trim();
 
-	// Item Image definitions
-	let enableItemImage: boolean = false;
-	let enableItemImageStyle: boolean = false;
-	let enableItemImageClass: boolean = false;
-	let itemImageInsertMethod: string = 'span';
-	let itemImageWidth: string = '';
-	let itemImageHeight: string = '';
-	let itemImageSectionOpen: boolean = false;
+	let itemImageUI = {
+		enabled: false,
+		style: false,
+		class: false,
+		insertMethod: 'span',
+		width: '',
+		height: '',
+		open: false
+	};
 
 	const generatedElements: Array<HTMLElement> = [];
 
 	function processCodeGeneration() {
-		if (!enableItemName && !enableItemDescription && !enableItemImage) return;
+		if (!itemNameUI.enabled && !itemDescriptionUI.enabled && !itemImageUI.enabled) return;
 
-		itemNameSectionOpen = false;
-		itemDescriptionSectionOpen = false;
-		itemImageSectionOpen = false;
-		itemNameSectionOpen = true;
-		itemDescriptionSectionOpen = true;
-		itemImageSectionOpen = true;
+		itemNameUI.open = false;
+		itemDescriptionUI.open = false;
+		itemImageUI.open = false;
+		itemNameUI.open = true;
+		itemDescriptionUI.open = true;
+		itemImageUI.open = true;
 
-		if (enableItemName && !itemNameElementType) return;
-		if (enableItemDescription && !itemDescriptionElementType) return;
+		if (itemNameUI.enabled && !itemNameElementType) return;
+		if (itemDescriptionUI.enabled && !itemDescriptionElementType) return;
 
 		if (!processItemName()) return;
 		if (!processItemDescription()) return;
@@ -63,7 +66,7 @@
 	}
 
 	function processItemName(): boolean {
-		if (!enableItemName) return true;
+		if (!itemNameUI.enabled) return true;
 		if (itemNameElementType === '') return true;
 
 		document.getElementById('item-name-element')?.removeAttribute('aria-invalid');
@@ -72,8 +75,8 @@
 			let itemNameElement: HTMLElement = document.createElement(itemNameElementType);
 			itemNameElement.setAttribute('data-item-api-name', apiIdValue);
 
-			if (enableItemNameStyle) itemNameElement.setAttribute('style', '…');
-			if (enableItemNameClass) itemNameElement.setAttribute('class', '…');
+			if (itemNameUI.style) itemNameElement.setAttribute('style', '…');
+			if (itemNameUI.class) itemNameElement.setAttribute('class', '…');
 
 			generatedElements.push(itemNameElement);
 			return true;
@@ -85,7 +88,7 @@
 	}
 
 	function processItemDescription(): boolean {
-		if (!enableItemDescription) return true;
+		if (!itemDescriptionUI.enabled) return true;
 		if (itemDescriptionElementType === '') return true;
 		document.getElementById('item-description-element')?.removeAttribute('aria-invalid');
 
@@ -94,8 +97,8 @@
 
 			itemDescriptionElement.setAttribute('data-item-api-description', apiIdValue);
 
-			if (enableItemDescriptionStyle) itemDescriptionElement.setAttribute('style', '…');
-			if (enableItemDescriptionClass) itemDescriptionElement.setAttribute('class', '…');
+			if (itemDescriptionUI.style) itemDescriptionElement.setAttribute('style', '…');
+			if (itemDescriptionUI.class) itemDescriptionElement.setAttribute('class', '…');
 
 			generatedElements.push(itemDescriptionElement);
 			return true;
@@ -107,31 +110,31 @@
 	}
 
 	function processItemImage() {
-		if (!enableItemImage) return;
+		if (!itemImageUI.enabled) return;
 
 		let outputElement: HTMLElement;
 
-		if (itemImageInsertMethod === 'span' || itemImageInsertMethod === 'div') {
-			outputElement = document.createElement(itemImageInsertMethod);
+		if (itemImageUI.insertMethod === 'span' || itemImageUI.insertMethod === 'div') {
+			outputElement = document.createElement(itemImageUI.insertMethod);
 
-			if (itemImageInsertMethod === 'div') {
-				if (enableItemImageStyle) outputElement.setAttribute('style', '…');
-				if (enableItemImageClass) outputElement.setAttribute('class', '…');
+			if (itemImageUI.insertMethod === 'div') {
+				if (itemImageUI.style) outputElement.setAttribute('style', '…');
+				if (itemImageUI.class) outputElement.setAttribute('class', '…');
 			}
 		} else {
 			return;
 		}
 
 		outputElement.setAttribute('data-item-api-image', apiIdValue);
-		if (itemImageWidth !== '') outputElement.setAttribute('data-width', itemImageWidth);
-		if (itemImageHeight !== '') outputElement.setAttribute('data-height', itemImageHeight);
+		if (itemImageUI.width !== '') outputElement.setAttribute('data-width', itemImageUI.width);
+		if (itemImageUI.height !== '') outputElement.setAttribute('data-height', itemImageUI.height);
 
 		generatedElements.push(outputElement);
 	}
 </script>
 
 <form>
-	<details open={itemNameSectionOpen}>
+	<details open={itemNameUI.open}>
 		<summary>Item Name</summary>
 
 		<label for="item-name-switch">
@@ -140,7 +143,7 @@
 				id="item-name-switch"
 				name="item-name-switch"
 				role="switch"
-				bind:checked={enableItemName}
+				bind:checked={itemNameUI.enabled}
 			/>
 			Enable
 		</label>
@@ -152,8 +155,8 @@
 				id="item-name-element"
 				name="item-name-element"
 				placeholder="Examples: h1, p, span"
-				disabled={!enableItemName}
-				bind:value={itemNameElementTypeRaw}
+				disabled={!itemNameUI.enabled}
+				bind:value={itemNameUI.typeRaw}
 				required
 			/>
 		</label>
@@ -164,8 +167,8 @@
 					type="checkbox"
 					id="item-name-style-checkbox"
 					name="item-name-style-checkbox"
-					disabled={!enableItemName}
-					bind:checked={enableItemNameStyle}
+					disabled={!itemNameUI.enabled}
+					bind:checked={itemNameUI.style}
 				/>
 				Add style attribute
 			</label>
@@ -174,15 +177,15 @@
 					type="checkbox"
 					id="item-name-class-checkbox"
 					name="item-name-class-checkbox"
-					disabled={!enableItemName}
-					bind:checked={enableItemNameClass}
+					disabled={!itemNameUI.enabled}
+					bind:checked={itemNameUI.class}
 				/>
 				Add class attribute
 			</label>
 		</fieldset>
 	</details>
 
-	<details open={itemDescriptionSectionOpen}>
+	<details open={itemDescriptionUI.open}>
 		<summary>Item Description</summary>
 		<label for="item-description-switch">
 			<input
@@ -190,7 +193,7 @@
 				id="item-description-switch"
 				name="item-description-switch"
 				role="switch"
-				bind:checked={enableItemDescription}
+				bind:checked={itemDescriptionUI.enabled}
 			/>
 			Enable
 		</label>
@@ -202,8 +205,8 @@
 				id="item-description-element"
 				name="item-description-element"
 				placeholder="Examples: h1, p, span"
-				disabled={!enableItemDescription}
-				bind:value={itemDescriptionElementTypeRaw}
+				disabled={!itemDescriptionUI.enabled}
+				bind:value={itemDescriptionUI.typeRaw}
 				required
 			/>
 		</label>
@@ -214,8 +217,8 @@
 					type="checkbox"
 					id="item-description-style-checkbox"
 					name="item-description-style-checkbox"
-					disabled={!enableItemDescription}
-					bind:checked={enableItemDescriptionStyle}
+					disabled={!itemDescriptionUI.enabled}
+					bind:checked={itemDescriptionUI.style}
 				/>
 				Add style attribute
 			</label>
@@ -224,15 +227,15 @@
 					type="checkbox"
 					id="item-description-class-checkbox"
 					name="item-description-class-checkbox"
-					disabled={!enableItemDescription}
-					bind:checked={enableItemDescriptionClass}
+					disabled={!itemDescriptionUI.enabled}
+					bind:checked={itemDescriptionUI.class}
 				/>
 				Add class attribute
 			</label>
 		</fieldset>
 	</details>
 
-	<details open={itemImageSectionOpen}>
+	<details open={itemImageUI.open}>
 		<summary>Item Image</summary>
 		<label for="item-image-switch">
 			<input
@@ -240,7 +243,7 @@
 				id="item-image-switch"
 				name="item-image-switch"
 				role="switch"
-				bind:checked={enableItemImage}
+				bind:checked={itemImageUI.enabled}
 			/>
 			Enable
 		</label>
@@ -253,8 +256,8 @@
 					id="item-image-method-span-radio"
 					name="item-image-method-radio"
 					value="span"
-					disabled={!enableItemImage}
-					bind:group={itemImageInsertMethod}
+					disabled={!itemImageUI.enabled}
+					bind:group={itemImageUI.insertMethod}
 					checked
 				/>
 				Span (In-place image replacement)
@@ -265,13 +268,13 @@
 					id="item-image-method-div-radio"
 					name="item-image-method-radio"
 					value="div"
-					disabled={!enableItemImage}
-					bind:group={itemImageInsertMethod}
+					disabled={!itemImageUI.enabled}
+					bind:group={itemImageUI.insertMethod}
 				/>
 				Div (Image appendment)
 			</label>
 		</fieldset>
-		{#if itemImageInsertMethod !== 'span'}
+		{#if itemImageUI.insertMethod !== 'span'}
 			<fieldset>
 				<legend><strong>Options</strong></legend>
 				<label for="item-image-style-checkbox">
@@ -279,8 +282,8 @@
 						type="checkbox"
 						id="item-image-style-checkbox"
 						name="item-image-style-checkbox"
-						disabled={!enableItemImage}
-						bind:checked={enableItemImageStyle}
+						disabled={!itemImageUI.enabled}
+						bind:checked={itemImageUI.style}
 					/>
 					Add style attribute
 				</label>
@@ -289,8 +292,8 @@
 						type="checkbox"
 						id="item-image-class-checkbox"
 						name="item-image-class-checkbox"
-						disabled={!enableItemImage}
-						bind:checked={enableItemImageClass}
+						disabled={!itemImageUI.enabled}
+						bind:checked={itemImageUI.class}
 					/>
 					Add class attribute
 				</label>
@@ -304,8 +307,8 @@
 					id="item-image-width"
 					name="item-image-width"
 					placeholder="Examples: 10px, 15%"
-					disabled={!enableItemImage}
-					bind:value={itemImageWidth}
+					disabled={!itemImageUI.enabled}
+					bind:value={itemImageUI.width}
 				/>
 			</label>
 			<label for="item-image-height">
@@ -315,8 +318,8 @@
 					id="item-image-height"
 					name="item-image-height"
 					placeholder="Examples: 10px, 15%"
-					disabled={!enableItemImage}
-					bind:value={itemImageHeight}
+					disabled={!itemImageUI.enabled}
+					bind:value={itemImageUI.height}
 				/>
 			</label>
 		</div>
