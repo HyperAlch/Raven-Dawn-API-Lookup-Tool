@@ -172,4 +172,9 @@
 	legend {
 		padding-bottom: 4px;
 	}
+
+	td,
+	th {
+		text-align: center;
+	}
 </style>
