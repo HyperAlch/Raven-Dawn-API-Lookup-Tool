@@ -15,6 +15,7 @@
 					<summary aria-haspopup="listbox">Select an api</summary>
 					<ul role="listbox">
 						<li><a href="/api/items">Items</a></li>
+						<li><a href="/api/spells">Spells</a></li>
 					</ul>
 				</details>
 			</li>
